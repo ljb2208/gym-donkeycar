@@ -374,18 +374,12 @@ class DonkeyUnitySimHandler(IMesgHandler):
             self.pitch = data["pitch"]
             self.yaw = data["yaw"]
 
-<<<<<<< HEAD
-        if "steering_angle" in data:
             self.steering_angle = data["steering_angle"]
 
         if "time" in data:
             self.time = data["time"]
 
-=======
->>>>>>> upstream/master
         # Cross track error not always present.
-        # Will be missing if path is not setup in the given scene.
-        # It should be setup in the 4 scenes available now.
         if "cte" in data:
             self.cte = data["cte"]
 
