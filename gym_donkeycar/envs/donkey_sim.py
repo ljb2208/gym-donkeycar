@@ -117,12 +117,18 @@ class DonkeyUnitySimHandler(IMesgHandler):
         self.gyro_x = 0.0
         self.gyro_y = 0.0
         self.gyro_z = 0.0
+        self.gyro_w = 0.0
         self.accel_x = 0.0
         self.accel_y = 0.0
         self.accel_z = 0.0
         self.vel_x = 0.0
         self.vel_y = 0.0
         self.vel_z = 0.0
+        self.roll = 0.0
+        self.pitch = 0.0
+        self.yaw = 0.0
+        self.steering_angle = 0.0
+        self.time = 0.0
 
 
     def on_connect(self, client):
@@ -197,12 +203,18 @@ class DonkeyUnitySimHandler(IMesgHandler):
         self.gyro_x = 0.0
         self.gyro_y = 0.0
         self.gyro_z = 0.0
+        self.gyro_w = 0.0
         self.accel_x = 0.0
         self.accel_y = 0.0
         self.accel_z = 0.0
         self.vel_x = 0.0
         self.vel_y = 0.0
         self.vel_z = 0.0
+        self.roll = 0.0
+        self.pitch = 0.0
+        self.yaw = 0.0
+        self.time = 0.0
+        self.steering_angle = 0.0
 
 
     def get_sensor_size(self):
@@ -223,9 +235,12 @@ class DonkeyUnitySimHandler(IMesgHandler):
         #        "speed": self.speed, "hit": self.hit}
         info = {'pos'  : (self.x, self.y, self.z), 'cte': self.cte,
                 "speed":  self.speed, "hit": self.hit,
-                'gyro' : (self.gyro_x, self.gyro_y, self.gyro_z),
+                'gyro' : (self.gyro_x, self.gyro_y, self.gyro_z, self.gyro_w),
                 'accel': (self.accel_x, self.accel_y, self.accel_z),
-                'vel'  : (self.vel_x, self.vel_y, self.vel_z)}
+                'vel'  : (self.vel_x, self.vel_y, self.vel_z),
+                'angles' : (self.roll, self.pitch, self.yaw),
+                "steering_angle" : self.steering_angle,
+                "time" : self.time}
 
         #self.timer.on_frame()
 
@@ -252,7 +267,7 @@ class DonkeyUnitySimHandler(IMesgHandler):
 
         if self.hit != "none":
             return -2.0
-        
+
         # going fast close to the center of lane yeilds best reward
         return (1.0 - (math.fabs(self.cte) / self.max_cte)) * self.speed
 
@@ -276,6 +291,8 @@ class DonkeyUnitySimHandler(IMesgHandler):
             self.gyro_x = data["gyro_x"]
             self.gyro_y = data["gyro_y"]
             self.gyro_z = data["gyro_z"]
+        if "gyro_w" in data:
+            self.gyro_w = data["gyro_w"]
         if "accel_x" in data:
             self.accel_x = data["accel_x"]
             self.accel_y = data["accel_y"]
@@ -284,6 +301,17 @@ class DonkeyUnitySimHandler(IMesgHandler):
             self.vel_x = data["vel_x"]
             self.vel_y = data["vel_y"]
             self.vel_z = data["vel_z"]
+
+        if "roll" in data:
+            self.roll = data["roll"]
+            self.pitch = data["pitch"]
+            self.yaw = data["yaw"]
+
+        if "steering_angle" in data:
+            self.steering_angle = data["steering_angle"]
+
+        if "time" in data:
+            self.time = data["time"]
 
         # Cross track error not always present.
         # Will be missing if path is not setup in the given scene.
@@ -299,7 +327,7 @@ class DonkeyUnitySimHandler(IMesgHandler):
 
         self.determine_episode_over()
 
-    def on_cross_start(self, data):        
+    def on_cross_start(self, data):
         logger.info(f"crossed start line: lap_time {data['lap_time']}")
 
     def on_race_start(self, data):

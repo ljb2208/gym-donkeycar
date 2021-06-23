@@ -18,7 +18,7 @@ from gym_donkeycar.envs.donkey_proc import DonkeyUnityProcess
 logger = logging.getLogger(__name__)
 
 def supply_defaults(conf):
-    defaults = [("start_delay", 5.0),
+    defaults = [("start_delay", 10.0),
                 ("max_cte", 5.0),
                 ("frame_skip", 2),
                 ("cam_resolution", (120,160,3)),
@@ -53,7 +53,7 @@ class DonkeyEnv(gym.Env):
         conf["level"] = level
 
         # ensure defaults are supplied if missing.
-        supply_defaults(conf)        
+        supply_defaults(conf)
 
         # set logging level
         logging.basicConfig(level=conf["log_level"])
